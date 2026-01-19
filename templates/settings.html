@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection Settings - Wildlife Protection</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container { 
+            max-width: 1600px; 
+            margin: 0 auto; 
+            padding: 15px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 5px solid #2563eb;
+        }
+        
+        .header h1 {
+            font-size: 1.4em;
+            color: #1e293b;
+            font-weight: 600;
+        }
+        
+        .nav-link {
+            background: #2563eb;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .nav-link:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        /* Flash Messages */
+        .flash {
+            padding: 10px 18px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-weight: 500;
+            animation: slideDown 0.4s ease;
+            border-left: 4px solid;
+            font-size: 0.9em;
+        }
+        
+        .flash.success { 
+            background: #ecfdf5; 
+            color: #065f46; 
+            border-color: #10b981;
+        }
+        .flash.warning { 
+            background: #fffbeb; 
+            color: #92400e; 
+            border-color: #f59e0b;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Main Grid Layout */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        /* Section Cards */
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-y: auto;
+            max-height: calc(100vh - 180px);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .section::-webkit-scrollbar { width: 6px; }
+        .section::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .section::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .section::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .section h2 {
+            font-size: 1.2em;
+            color: #1e293b;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            font-weight: 600;
+        }
+        
+        .section-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            margin-left: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 18px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+        
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.85em;
+            background: white;
+            transition: all 0.2s;
+            color: #1e293b;
+            font-weight: 500;
+        }
+        
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* Range Sliders */
+        .range-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #2563eb 0%, #2563eb var(--value), #e2e8f0 var(--value), #e2e8f0 100%);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #2563eb;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid #2563eb;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+        }
+        
+        .range-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 700;
+            color: #2563eb;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            border: 2px solid #2563eb;
+        }
+        
+        .form-group small {
+            display: block;
+            color: #64748b;
+            font-size: 0.75em;
+            margin-top: 6px;
+        }
+        
+        /* Toggle Switches */
+        .toggle-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        
+        .toggle-item:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: #2563eb;
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        
+        .toggle-label {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.85em;
+        }
+        
+        /* Class Labels */
+        .class-icon {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .gun-icon { background: #ef4444; }
+        .wound-icon { background: #f59e0b; }
+        
+        /* Threshold Section */
+        .threshold-section {
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .threshold-section h3 {
+            font-size: 0.9em;
+            color: #1e40af;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        /* Save Button */
+        .save-btn-container {
+            margin-top: 12px;
+            grid-column: 1 / -1;
+        }
+        
+        .save-btn {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        .save-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+        }
+        
+        .save-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Detection System Configuration</h1>
+            <a href="/dashboard" class="nav-link">Back to Dashboard</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/settings">
+            <div class="settings-grid">
+                
+                <!-- ==================== UPLOADED VIDEO (LEFT) ==================== -->
+                <div class="section">
+                    <h2>Uploaded Video Analysis<span class="section-badge">Batch</span></h2>
+                    
+                    <div class="form-group">
+                        <label>Model Selection</label>
+                        <select name="upload_model">
+                            {% for m in models %}
+                                <option value="{{ m }}" {% if settings.upload.model_name == m %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Active Detection Classes</label>
+                        <div class="toggle-group">
+                            <div class="toggle-item">
+                                <span class="toggle-label"><span class="class-icon gun-icon"></span>Gun</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" name="upload_class_0" value="0" 
+                                           {% if 0 in settings.upload.classes %}checked{% endif %}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <span class="toggle-label"><span class="class-icon wound-icon"></span>Wound</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" name="upload_class_1" value="1" 
+                                           {% if 1 in settings.upload.classes %}checked{% endif %}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="threshold-section">
+                        <h3>Detection Thresholds</h3>
+                        
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label><span class="class-icon gun-icon"></span>Gun Confidence</label>
+                            <div class="range-wrapper">
+                                <input type="range" name="upload_conf_gun" min="0.1" max="1.0" step="0.05" 
+                                       value="{{ settings.upload.conf_gun }}"
+                                       oninput="this.nextElementSibling.textContent = this.value; this.style.setProperty('--value', (this.value - 0.1) / 0.9 * 100 + '%')"
+                                       style="--value: {{ (settings.upload.conf_gun - 0.1) / 0.9 * 100 }}%">
+                                <span class="range-value">{{ settings.upload.conf_gun }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label><span class="class-icon wound-icon"></span>Wound Confidence</label>
+                            <div class="range-wrapper">
+                                <input type="range" name="upload_conf_wound" min="0.1" max="1.0" step="0.05" 
+                                       value="{{ settings.upload.conf_wound }}"
+                                       oninput="this.nextElementSibling.textContent = this.value; this.style.setProperty('--value', (this.value - 0.1) / 0.9 * 100 + '%')"
+                                       style="--value: {{ (settings.upload.conf_wound - 0.1) / 0.9 * 100 }}%">
+                                <span class="range-value">{{ settings.upload.conf_wound }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>IOU Threshold</label>
+                        <div class="range-wrapper">
+                            <input type="range" name="upload_iou" min="0.1" max="1.0" step="0.05" 
+                                   value="{{ settings.upload.iou }}"
+                                   oninput="this.nextElementSibling.textContent = this.value; this.style.setProperty('--value', (this.value - 0.1) / 0.9 * 100 + '%')"
+                                   style="--value: {{ (settings.upload.iou - 0.1) / 0.9 * 100 }}%">
+                            <span class="range-value">{{ settings.upload.iou }}</span>
+                        </div>
+                        <small>Controls overlap removal (lower = remove duplicates)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Maximum Detections</label>
+                        <div class="range-wrapper">
+                            <input type="range" name="upload_max_det" min="1" max="300" step="1" 
+                                   value="{{ settings.upload.max_det }}"
+                                   oninput="this.nextElementSibling.textContent = this.value; this.style.setProperty('--value', (this.value - 1) / 299 * 100 + '%')"
+                                   style="--value: {{ (settings.upload.max_det - 1) / 299 * 100 }}%">
+                            <span class="range-value">{{ settings.upload.max_det }}</span>
+                        </div>
+                        <small>Maximum objects per frame</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Processing Speed</label>
+                        <select name="upload_fps_skip">
+                            <option value="1" {% if settings.upload.process_every_n_frames == 1 %}selected{% endif %}>Every Frame (Most Thorough)</option>
+                            <option value="2" {% if settings.upload.process_every_n_frames == 2 %}selected{% endif %}>Every 2nd Frame</option>
+                            <option value="3" {% if settings.upload.process_every_n_frames == 3 %}selected{% endif %}>Every 3rd Frame (Recommended)</option>
+                            <option value="5" {% if settings.upload.process_every_n_frames == 5 %}selected{% endif %}>Every 5th Frame</option>
+                            <option value="10" {% if settings.upload.process_every_n_frames == 10 %}selected{% endif %}>Every 10th Frame (Fast)</option>
+                            <option value="15" {% if settings.upload.process_every_n_frames == 15 %}selected{% endif %}>Every 15th Frame</option>
+                            <option value="30" {% if settings.upload.process_every_n_frames == 30 %}selected{% endif %}>Once Per Second</option>
+                        </select>
+                        <small>Frame skip rate for faster processing</small>
+                    </div>
+                </div>
+
+                <!-- ==================== LIVE CAMERA (RIGHT) ==================== -->
+                <div class="section">
+                    <h2>Live Camera Detection<span class="section-badge">Real-time</span></h2>
+                    
+                    <div class="form-group">
+                        <label>Model Selection</label>
+                        <select name="live_model">
+                            {% for m in models %}
+                                <option value="{{ m }}" {% if settings.live.model_name == m %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Active Detection Classes</label>
+                        <div class="toggle-group">
+                            <div class="toggle-item">
+                                <span class="toggle-label"><span class="class-icon gun-icon"></span>Gun</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" name="live_class_0" value="0" 
+                                           {% if 0 in settings.live.classes %}checked{% endif %}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <span class="toggle-label"><span class="class-icon wound-icon"></span>Wound</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" name="live_class_1" value="1" 
+                                           {% if 1 in settings.live.classes %}checked{% endif %}>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="threshold-section">
+                        <h3>Detection Thresholds</h3>
+                        
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label><span class="class-icon gun-icon"></span>Gun Confidence</label>
+                            <div class="range-wrapper">
+                                <input type="range" name="live_conf_gun" min="0.1" max="1.0" step="0.05" 
+                                       value="{{ settings.live.conf_gun }}" 
+                                       oninput="this.nextElementSibling.textContent = this.value; this.style.setProperty('--value', (this.value - 0.1) / 0.9 * 100 + '%')"
+                                       style="--value: {{ (settings.live.conf_gun - 0.1) / 0.9 * 100 }}%">
+                                <span class="range-value">{{ settings.live.conf_gun }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label><span class="class-icon wound-icon"></span>Wound Confidence</label>
+                            <div class="range-wrapper">
+                                <input type="range" name="live_conf_wound" min="0.1" max="1.0" step="0.05" 
+                                       value="{{ settings.live.conf_wound }}"
+                                       oninput="this.nextElementSibling.textContent = this.value; this.style.setProperty('--value', (this.value - 0.1) / 0.9 * 100 + '%')"
+                                       style="--value: {{ (settings.live.conf_wound - 0.1) / 0.9 * 100 }}%">
+                                <span class="range-value">{{ settings.live.conf_wound }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>IOU Threshold</label>
+                        <div class="range-wrapper">
+                            <input type="range" name="live_iou" min="0.1" max="1.0" step="0.05" 
+                                   value="{{ settings.live.iou }}"
+                                   oninput="this.nextElementSibling.textContent = this.value; this.style.setProperty('--value', (this.value - 0.1) / 0.9 * 100 + '%')"
+                                   style="--value: {{ (settings.live.iou - 0.1) / 0.9 * 100 }}%">
+                            <span class="range-value">{{ settings.live.iou }}</span>
+                        </div>
+                        <small>Controls overlap removal (lower = remove duplicates)</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Maximum Detections</label>
+                        <div class="range-wrapper">
+                            <input type="range" name="live_max_det" min="1" max="300" step="1" 
+                                   value="{{ settings.live.max_det }}"
+                                   oninput="this.nextElementSibling.textContent = this.value; this.style.setProperty('--value', (this.value - 1) / 299 * 100 + '%')"
+                                   style="--value: {{ (settings.live.max_det - 1) / 299 * 100 }}%">
+                            <span class="range-value">{{ settings.live.max_det }}</span>
+                        </div>
+                        <small>Maximum objects per frame</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Processing Speed</label>
+                        <select name="live_fps_skip">
+                            <option value="1" {% if settings.live.process_every_n_frames == 1 %}selected{% endif %}>Every Frame (Best Quality)</option>
+                            <option value="2" {% if settings.live.process_every_n_frames == 2 %}selected{% endif %}>Every 2nd Frame</option>
+                            <option value="3" {% if settings.live.process_every_n_frames == 3 %}selected{% endif %}>Every 3rd Frame</option>
+                            <option value="5" {% if settings.live.process_every_n_frames == 5 %}selected{% endif %}>Every 5th Frame (Recommended)</option>
+                            <option value="10" {% if settings.live.process_every_n_frames == 10 %}selected{% endif %}>Every 10th Frame</option>
+                            <option value="15" {% if settings.live.process_every_n_frames == 15 %}selected{% endif %}>Every 15th Frame</option>
+                            <option value="20" {% if settings.live.process_every_n_frames == 20 %}selected{% endif %}>Every 20th Frame</option>
+                            <option value="30" {% if settings.live.process_every_n_frames == 30 %}selected{% endif %}>Once Per Second</option>
+                        </select>
+                        <small>Frame skip rate to balance performance</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="save-btn-container">
+                <button type="submit" class="save-btn">Save Configuration</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detection Result - Wildlife Protection</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html, body { 
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: #f0f4f8;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        
+        .nav-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #2563eb;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+        
+        .nav-link:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px 20px;
+            height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .video-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        /* Header Section */
+        .video-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        
+        .header-info h2 {
+            font-size: 1.3em;
+            color: #1e293b;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        
+        .header-info p {
+            font-size: 0.85em;
+            color: #64748b;
+        }
+        
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+            border: 2px solid #2563eb;
+        }
+        
+        .recording-dot {
+            width: 10px;
+            height: 10px;
+            background: #2563eb;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+        
+        /* Video Container - FLEXIBLE HEIGHT */
+        .video-container {
+            position: relative;
+            background: #000;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .video-stream {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: white;
+        }
+        
+        .error-message h3 {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+        }
+        
+        .error-message p {
+            font-size: 0.95em;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+        
+        .error-btn {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .error-btn:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        }
+        
+        /* Footer Section */
+        .video-footer {
+            padding: 15px 20px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+        
+        .legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85em;
+            color: #475569;
+            font-weight: 500;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .color-gun { background: #ef4444; }
+        .color-wound { background: #f59e0b; }
+        
+        .powered-by {
+            margin-left: auto;
+            font-size: 0.8em;
+            color: #94a3b8;
+        }
+        
+        /* Info Badge */
+        .info-badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <span class="nav-title">Detection Feed Monitor</span>
+            <a href="/dashboard" class="nav-link">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Back to Dashboard
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="video-card">
+            
+            <!-- Header -->
+            <div class="video-header">
+                <div class="header-info">
+                    <h2>
+                        {% if mode == 'live' %}
+                            Live Camera Stream
+                            <span class="info-badge">Real-time</span>
+                        {% else %}
+                            Uploaded Video Analysis
+                            <span class="info-badge">Batch</span>
+                        {% endif %}
+                    </h2>
+                    <p>AI-powered object detection using YOLOv8</p>
+                </div>
+                
+                <div class="status-badge">
+                    <div class="recording-dot"></div>
+                    <span>DETECTING</span>
+                </div>
+            </div>
+
+            <!-- Video Stream -->
+            <div class="video-container">
+                {% if mode == 'live' %}
+                    <img src="{{ url_for('video_feed') }}" 
+                         alt="Live Camera Stream"
+                         class="video-stream"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'error-message\'><h3>Camera Unavailable</h3><p>Please check camera permissions and ensure the device is connected.</p><a href=\'/dashboard\' class=\'error-btn\'>Return to Dashboard</a></div>'">
+                
+                {% elif mode == 'upload' %}
+                    <img src="{{ url_for('stream_uploaded_video', filename=filename) }}" 
+                         alt="Processed Video Stream"
+                         class="video-stream"
+                         onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'error-message\'><h3>Video Processing Complete</h3><p>The video has finished playing or the file could not be found.</p><a href=\'/dashboard\' class=\'error-btn\'>Upload Another Video</a></div>'">
+                
+                {% else %}
+                    <div class="error-message">
+                        <h3>Invalid Mode Selected</h3>
+                        <p>The requested detection mode is not supported.</p>
+                        <a href="/dashboard" class="error-btn">Return to Dashboard</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Footer with Legend -->
+            <div class="video-footer">
+                <div class="legend-container">
+                    <div class="legend-item">
+                        <span class="legend-color color-gun"></span>
+                        <span>Gun Detection</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color color-wound"></span>
+                        <span>Wound Detection</span>
+                    </div>
+                    <div class="powered-by">
+                        Powered by Ultralytics YOLOv8
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
